@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">ColaboraBoard</string>
+
+    <!--IntroActivity-->
+    <string name="image_contentDescription">image</string>
+    <string name="get_started_text">Let\'s Get started</string>
+    <string name="intro_text_description">Collaborate and Plan Together Across Multiple Devices on ColaboraBoard\'s Minimalist Interface.</string>
+    <string name="sign_in">SIGN IN</string>
+    <string name="sign_up">SIGN UP</string>
+    <!--SignUp & SignIn Activities-->
+    <string name="sign_up_description_text">Enter your Name, Email and Password, to register.</string>
+    <string name="sign_in_description_text">Enter your Email and Password, to log in.</string>
+    <string name="name">Name</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+</resources>
