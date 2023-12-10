@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.ColaboraBoard" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/primary</item>
     </style>
 
     <style name="Theme.ColaboraBoard" parent="Base.Theme.ColaboraBoard" />
@@ -11,4 +11,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="Theme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="Theme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 </resources>

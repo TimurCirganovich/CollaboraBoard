@@ -43,7 +43,9 @@
         </activity>
         <activity
             android:name=".activities.MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.ColaboraBoard.NoActionBar" />
     </application>
 
 </manifest>
