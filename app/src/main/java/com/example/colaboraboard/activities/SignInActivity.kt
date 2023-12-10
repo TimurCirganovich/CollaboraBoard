@@ -1,20 +1,29 @@
 package com.example.colaboraboard.activities
 
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
+import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.Toast
 import com.example.colaboraboard.R
 import com.example.colaboraboard.databinding.ActivitySignInBinding
+import com.google.firebase.auth.FirebaseAuth
 
-class SignInActivity : AppCompatActivity() {
+class SignInActivity : BaseActivity() {
     private lateinit var binding: ActivitySignInBinding
+    private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignInBinding.inflate(layoutInflater)
         //setContentView(R.layout.activity_sign_in)
         setContentView(binding.root)
+
+        //Initialize the Firebase variable
+        auth = FirebaseAuth.getInstance()
 
         //Hides the status bar on different android versions
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -26,10 +35,14 @@ class SignInActivity : AppCompatActivity() {
             )
         }
 
+        binding.btnSignIn.setOnClickListener {
+            signInRegisteredUser()
+        }
+
         setupActionBar()
     }
 
-    //Set the button to go bac to the Intro screen
+    //Set the button to go back to the Intro screen
     private fun setupActionBar(){
         //val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar_sign_in_activity)
         //setSupportActionBar(toolbar)
@@ -42,5 +55,47 @@ class SignInActivity : AppCompatActivity() {
 
         //toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
         binding.toolbarSignInActivity.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+    }
+
+    private fun signInRegisteredUser(){
+        val email: String = binding.etEmailSignIn.text.toString().trim { it <= ' ' }
+        val password: String = binding.etPasswordSignIn.text.toString().trim { it <= ' ' }
+
+        if(validateForm(email, password)){
+            showProgressDialog(resources.getString(R.string.please_wait))
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this) { task ->
+                    hideProgressDialog()
+                    if (task.isSuccessful) {
+                        // Sign in success, goes to MainActivity
+                        Log.d("SignIn", "signInWithEmail:success")
+                        val user = auth.currentUser
+                        startActivity(Intent(this, MainActivity::class.java))
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w("SignIn", "signInWithEmail:failure", task.exception)
+                        Toast.makeText(
+                            baseContext,
+                            task.exception!!.message,
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    }
+                }
+        }
+    }
+
+    private fun validateForm(email: String, password: String) : Boolean{
+        return when{
+            TextUtils.isEmpty(email)->{
+                showErrorSnackBar("Please enter an email address")
+                false
+            }
+            TextUtils.isEmpty(password)->{
+                showErrorSnackBar("Please enter a password")
+                false
+            } else ->{
+                true
+            }
+        }
     }
 }
