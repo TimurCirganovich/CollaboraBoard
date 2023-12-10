@@ -11,6 +11,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import com.example.colaboraboard.R
 import com.example.colaboraboard.databinding.ActivitySignInBinding
+import com.example.colaboraboard.models.User
 import com.google.firebase.auth.FirebaseAuth
 
 class SignInActivity : BaseActivity() {
@@ -40,6 +41,12 @@ class SignInActivity : BaseActivity() {
         }
 
         setupActionBar()
+    }
+
+    fun signInSuccess(user: User){
+        hideProgressDialog()
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 
     //Set the button to go back to the Intro screen

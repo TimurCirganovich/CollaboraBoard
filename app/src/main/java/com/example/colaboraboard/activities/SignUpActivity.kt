@@ -1,16 +1,15 @@
 package com.example.colaboraboard.activities
 
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.WindowInsets
 import android.view.WindowManager
-import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
 import com.example.colaboraboard.R
 import com.example.colaboraboard.databinding.ActivitySignUpBinding
+import com.example.colaboraboard.firebase.FirestoreClass
+import com.example.colaboraboard.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
@@ -32,6 +31,17 @@ class SignUpActivity : BaseActivity() {
         }
 
         setupActionBar()
+    }
+
+    fun userRegisteredSuccess(){
+        Toast.makeText(
+            this,
+            "You have successfully registered!",
+            Toast.LENGTH_LONG
+        ).show()
+        hideProgressDialog()
+        FirebaseAuth.getInstance().signOut()
+        finish()
     }
 
     //Set the button to go bac to the Intro screen
@@ -77,17 +87,11 @@ class SignUpActivity : BaseActivity() {
             showProgressDialog(resources.getString(R.string.please_wait))
             FirebaseAuth.getInstance()
                 .createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-                    hideProgressDialog()
                     if (task.isSuccessful) {
                         val firebaseUser: FirebaseUser = task.result!!.user!!
                         val registeredEmail = firebaseUser.email!!
-                        Toast.makeText(
-                            this,
-                            "$name, you have successfully registered! The email address is $registeredEmail",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        FirebaseAuth.getInstance().signOut()
-                        finish()
+                        val user = User(firebaseUser.uid, name, registeredEmail)
+                        FirestoreClass().registerUser(this, user)
                     } else {
                         Toast.makeText(
                             this,
