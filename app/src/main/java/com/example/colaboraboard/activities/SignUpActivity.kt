@@ -1,15 +1,16 @@
-package com.example.colaboraboard
+package com.example.colaboraboard.activities
 
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowInsets
 import android.view.WindowManager
+import com.example.colaboraboard.R
 
-class SignInActivity : AppCompatActivity() {
+class SignUpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_in)
+        setContentView(R.layout.activity_sign_up)
 
         //Hides the status bar on different android versions
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -26,7 +27,7 @@ class SignInActivity : AppCompatActivity() {
 
     //Set the button to go bac to the Intro screen
     private fun setupActionBar(){
-        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar_sign_in_activity)
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar_sign_up_activity)
         setSupportActionBar(toolbar)
         val actionBar = supportActionBar
         if (actionBar != null){
@@ -34,6 +35,6 @@ class SignInActivity : AppCompatActivity() {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
         }
 
-        toolbar.setNavigationOnClickListener { onBackPressed() }
+        toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 }

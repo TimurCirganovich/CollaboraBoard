@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">ColaboraBoard</string>
-
+    <!-- -->
     <!--IntroActivity-->
     <string name="image_contentDescription">image</string>
     <string name="get_started_text">Let\'s Get started</string>
@@ -13,4 +13,7 @@
     <string name="name">Name</string>
     <string name="password">Password</string>
     <string name="email">Email</string>
+    <!--Dialog-->
+    <string name="please_click_back_again_to_exit">Please click back again to exit</string>
+    <string name="please_wait">Please Wait&#8230;</string>
 </resources>

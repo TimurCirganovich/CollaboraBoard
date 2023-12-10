@@ -1,7 +1,8 @@
-package com.example.colaboraboard
+package com.example.colaboraboard.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.colaboraboard.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
