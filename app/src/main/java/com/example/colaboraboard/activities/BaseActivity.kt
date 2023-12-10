@@ -1,19 +1,19 @@
 package com.example.colaboraboard.activities
 
 import android.app.Dialog
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.colaboraboard.R
+import com.example.colaboraboard.databinding.DialogProgressBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 
 open class BaseActivity : AppCompatActivity() {
-
+    private lateinit var binding: DialogProgressBinding
     private var doubleBackToExitPressedOnce = false
     private lateinit var mProgressDialog: Dialog
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,9 +28,9 @@ open class BaseActivity : AppCompatActivity() {
         The resource will be inflated, adding all top-level views to the screen
         */
 
-        mProgressDialog.setContentView(R.layout.dialog_progress)
-        val progressText = findViewById<TextView>(R.id.tv_progress_text)
-        progressText.text = text
+        binding = DialogProgressBinding.inflate(layoutInflater)
+        mProgressDialog.setContentView(binding.root)
+        binding.tvProgressText.text = text
 
         //Start the dialog and display it on screen
         mProgressDialog.show()
