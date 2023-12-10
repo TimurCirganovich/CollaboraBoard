@@ -13,6 +13,7 @@ import android.widget.TextView
 import com.example.colaboraboard.R
 import com.example.colaboraboard.databinding.ActivityIntroBinding
 import com.example.colaboraboard.databinding.ActivitySplashBinding
+import com.example.colaboraboard.firebase.FirestoreClass
 
 class SplashActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySplashBinding
@@ -42,7 +43,13 @@ class SplashActivity : AppCompatActivity() {
 
         //Move from SplashScreen to Intro screen
         Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this, IntroActivity::class.java))
+            val currentUserID = FirestoreClass().getCurrentUserId()
+            if(currentUserID.isNotEmpty()){
+                startActivity(Intent(this, MainActivity::class.java))
+            }else{
+                startActivity(Intent(this, IntroActivity::class.java))
+            }
+
             finish()
         }, 2500)
     }
