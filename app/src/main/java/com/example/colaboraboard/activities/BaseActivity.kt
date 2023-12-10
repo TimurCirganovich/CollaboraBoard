@@ -46,7 +46,7 @@ open class BaseActivity : AppCompatActivity() {
 
     fun doubleBackToExit(){
         if(doubleBackToExitPressedOnce){
-            super.onBackPressedDispatcher.onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
             return
         }
         this.doubleBackToExitPressedOnce = true
@@ -58,7 +58,7 @@ open class BaseActivity : AppCompatActivity() {
 
         Handler(Looper.getMainLooper()).postDelayed(
             {doubleBackToExitPressedOnce = false},
-            3000
+            2000
         )
     }
 
