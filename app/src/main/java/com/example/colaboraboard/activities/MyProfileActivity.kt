@@ -7,6 +7,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -16,6 +18,9 @@ import com.example.colaboraboard.R
 import com.example.colaboraboard.databinding.ActivityMyProfileBinding
 import com.example.colaboraboard.firebase.FirestoreClass
 import com.example.colaboraboard.models.User
+import com.example.colaboraboard.utils.Constants
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import java.io.IOException
 
 class MyProfileActivity : BaseActivity() {
@@ -23,11 +28,11 @@ class MyProfileActivity : BaseActivity() {
 
     companion object{
         private const val READ_STORAGE_PERMISSION_CODE = 1
-        //private const val PICK_IMAGE_REQUEST_CODE = 2
-
     }
 
     private var mSelectedImageFileUri: Uri? = null
+    private var mProfileImageURL: String = ""
+    private lateinit var mUserDetails: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +54,15 @@ class MyProfileActivity : BaseActivity() {
                     arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                     READ_STORAGE_PERMISSION_CODE
                 )
+            }
+        }
+
+        profileBinding.btnProfileUpdate.setOnClickListener {
+            if(mSelectedImageFileUri != null){
+                uploadUserImage()
+            }else{
+                showProgressDialog(resources.getString(R.string.please_wait))
+                updateUserProfileData()
             }
         }
     }
@@ -104,6 +118,7 @@ class MyProfileActivity : BaseActivity() {
     }
 
     fun setUserDataInUI(user: User){
+        mUserDetails = user
         Glide
             .with(this@MyProfileActivity)
             .load(user.image) // URL of the image
@@ -116,5 +131,69 @@ class MyProfileActivity : BaseActivity() {
         if(user.mobile != 0L){
             profileBinding.etProfileMobile.setText(user.mobile.toString())
         }
+    }
+
+    private fun updateUserProfileData(){
+        val userHashMap = HashMap<String, Any>()
+        var anyChangesMade = false
+        if(mProfileImageURL.isNotEmpty() && mProfileImageURL != mUserDetails.image){
+            userHashMap[Constants.IMAGE] = mProfileImageURL
+            anyChangesMade = true
+        }
+
+        if(profileBinding.etProfileName.text.toString() != mUserDetails.name){
+            userHashMap[Constants.NAME] = profileBinding.etProfileName.text.toString()
+            anyChangesMade = true
+        }
+
+        if(profileBinding.etProfileMobile.text.toString() != mUserDetails.mobile.toString()){
+            userHashMap[Constants.MOBILE] = profileBinding.etProfileMobile.text.toString().toLong()
+            anyChangesMade = true
+        }
+
+        if (anyChangesMade){
+            FirestoreClass().updateUserProfileData(this, userHashMap)
+
+        }
+    }
+
+    private fun uploadUserImage(){
+        showProgressDialog(resources.getString(R.string.please_wait))
+        if(mSelectedImageFileUri != null){
+            val sRef: StorageReference = FirebaseStorage.getInstance().reference.child(
+                "USER_IMAGE" + System.currentTimeMillis() +
+                        "." + getFileExtension(mSelectedImageFileUri)
+            )
+
+            sRef.putFile(mSelectedImageFileUri!!).addOnSuccessListener { taskSnapshot ->
+                Log.i(
+                    "Firebase Image URL",
+                    taskSnapshot.metadata!!.reference!!.downloadUrl.toString()
+                )
+
+                taskSnapshot.metadata!!.reference!!.downloadUrl.addOnSuccessListener { uri ->
+                    Log.i("Downloadable Image URL", uri.toString())
+                    mProfileImageURL = uri.toString()
+                    updateUserProfileData()
+                }
+            }.addOnFailureListener { exception ->
+                hideProgressDialog()
+                Toast.makeText(
+                    this@MyProfileActivity,
+                    exception.message,
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+    private fun getFileExtension(uri: Uri?): String?{
+        return MimeTypeMap.getSingleton().getExtensionFromMimeType(
+            contentResolver.getType(uri!!)
+        )
+    }
+
+    fun profileUpdateSuccess(){
+        hideProgressDialog()
+        finish()
     }
 }

@@ -2,6 +2,7 @@ package com.example.colaboraboard.firebase
 
 import android.app.Activity
 import android.util.Log
+import android.widget.Toast
 import com.example.colaboraboard.activities.MainActivity
 import com.example.colaboraboard.activities.MyProfileActivity
 import com.example.colaboraboard.activities.SignInActivity
@@ -24,6 +25,29 @@ class FirestoreClass {
             }.addOnFailureListener {
                 e->
                 Log.e(activity.javaClass.simpleName, "Error writing document", e)
+            }
+    }
+
+    fun updateUserProfileData(activity: MyProfileActivity, userHashMap: HashMap<String, Any>){
+        mFireStore.collection(Constants.USERS)
+            .document(getCurrentUserId())
+            .update(userHashMap)
+            .addOnSuccessListener {
+                Log.i(activity.javaClass.simpleName, "Profile data updated successfully!")
+                Toast.makeText(
+                    activity,
+                    "Profile data updated successfully!",
+                    Toast.LENGTH_SHORT
+                ).show()
+                activity.profileUpdateSuccess()
+            }.addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Profile data updating error!")
+                Toast.makeText(
+                    activity,
+                    "Error when updating profile!",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
     }
 
