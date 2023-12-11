@@ -19,4 +19,10 @@
     <!--MainXML's-->
     <string name="nav_my_profile">My profile</string>
     <string name="nav_sign_out">Sign Out</string>
+    <!--MyProfile-->
+    <string name="mobile">Moblie</string>
+    <string name="update">UPDATE</string>
+    <string name="my_profile_title">My Profile</string>
+    <!-- -->
+
 </resources>

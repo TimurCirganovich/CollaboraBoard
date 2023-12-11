@@ -2,7 +2,6 @@ package com.example.colaboraboard.activities
 
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -77,7 +76,7 @@ class SignInActivity : BaseActivity() {
                     if (task.isSuccessful) {
                         // Sign in success
                         Log.d("SignIn", "signInWithEmail:success")
-                        FirestoreClass().signInUser(this)
+                        FirestoreClass().loadUserData(this)
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w("SignIn", "signInWithEmail:failure", task.exception)

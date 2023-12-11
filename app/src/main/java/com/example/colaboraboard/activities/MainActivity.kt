@@ -3,7 +3,6 @@ package com.example.colaboraboard.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.GravityCompat
 import com.bumptech.glide.Glide
@@ -32,7 +31,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         navView.setNavigationItemSelectedListener(this)
         */
 
-        FirestoreClass().signInUser(this)
+        FirestoreClass().loadUserData(this)
 
         onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -82,11 +81,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.nav_my_profile ->{
-                Toast.makeText(
-                    this@MainActivity,
-                    "My profile",
-                    Toast.LENGTH_SHORT
-                ).show()
+                startActivity(Intent(this, MyProfileActivity::class.java))
             }
             R.id.nav_sign_out ->{
                 FirebaseAuth.getInstance().signOut()
@@ -108,7 +103,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         val headerBinding = viewHeader?.let { NavHeaderMainBinding.bind(it) }
         headerBinding?.navUserImage?.let {
             Glide
-                .with(this)
+                .with(this@MainActivity)
                 .load(user.image) // URL of the image
                 .centerCrop() // Scale type of the image.
                 .placeholder(R.drawable.ic_user_place_holder) // A default place holder

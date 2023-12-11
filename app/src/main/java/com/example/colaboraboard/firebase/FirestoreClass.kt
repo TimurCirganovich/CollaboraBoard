@@ -3,6 +3,7 @@ package com.example.colaboraboard.firebase
 import android.app.Activity
 import android.util.Log
 import com.example.colaboraboard.activities.MainActivity
+import com.example.colaboraboard.activities.MyProfileActivity
 import com.example.colaboraboard.activities.SignInActivity
 import com.example.colaboraboard.activities.SignUpActivity
 import com.example.colaboraboard.models.User
@@ -26,7 +27,7 @@ class FirestoreClass {
             }
     }
 
-    fun signInUser(activity: Activity){
+    fun loadUserData(activity: Activity){
         mFireStore.collection(Constants.USERS)
             .document(getCurrentUserId()).get()
             .addOnSuccessListener { document ->
@@ -38,6 +39,9 @@ class FirestoreClass {
                     is MainActivity ->{
                         activity.updateNavigationUserDetails(loggedInUser)
                     }
+                    is MyProfileActivity ->{
+                        activity.setUserDataInUI(loggedInUser)
+                    }
                 }
             }.addOnFailureListener {
                     e->
@@ -48,12 +52,15 @@ class FirestoreClass {
                     is MainActivity ->{
                         activity.hideProgressDialog()
                     }
+                    is MyProfileActivity ->{
+                        activity.hideProgressDialog()
+                    }
                 }
                 Log.e(activity.javaClass.simpleName, "Error while getting loggedIn user details", e)
             }
     }
     fun getCurrentUserId(): String{
-        var currentUser = FirebaseAuth.getInstance().currentUser
+        val currentUser = FirebaseAuth.getInstance().currentUser
         var currentUserID =""
         if(currentUser != null){
             currentUserID = currentUser.uid
