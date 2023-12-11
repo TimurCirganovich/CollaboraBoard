@@ -11,6 +11,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import com.example.colaboraboard.R
 import com.example.colaboraboard.databinding.ActivitySignInBinding
+import com.example.colaboraboard.firebase.FirestoreClass
 import com.example.colaboraboard.models.User
 import com.google.firebase.auth.FirebaseAuth
 
@@ -74,15 +75,14 @@ class SignInActivity : BaseActivity() {
                 .addOnCompleteListener(this) { task ->
                     hideProgressDialog()
                     if (task.isSuccessful) {
-                        // Sign in success, goes to MainActivity
+                        // Sign in success
                         Log.d("SignIn", "signInWithEmail:success")
-                        val user = auth.currentUser
-                        startActivity(Intent(this, MainActivity::class.java))
+                        FirestoreClass().signInUser(this)
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w("SignIn", "signInWithEmail:failure", task.exception)
                         Toast.makeText(
-                            baseContext,
+                            this@SignInActivity,
                             task.exception!!.message,
                             Toast.LENGTH_SHORT,
                         ).show()

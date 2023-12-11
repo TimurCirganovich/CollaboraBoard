@@ -48,7 +48,8 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     //Circle image dependency
     implementation("de.hdodenhof:circleimageview:3.1.0")
-
+    //Glide dependency
+    implementation("com.github.bumptech.glide:glide:4.16.0")
     //Google firebase services implementation
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-analytics")

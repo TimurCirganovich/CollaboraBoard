@@ -94,7 +94,7 @@ class SignUpActivity : BaseActivity() {
                         FirestoreClass().registerUser(this, user)
                     } else {
                         Toast.makeText(
-                            this,
+                            this@SignUpActivity,
                             task.exception!!.message,
                             Toast.LENGTH_SHORT
                         ).show()

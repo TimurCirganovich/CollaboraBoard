@@ -6,49 +6,77 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.GravityCompat
+import com.bumptech.glide.Glide
 import com.example.colaboraboard.R
 import com.example.colaboraboard.databinding.ActivityMainBinding
-import com.example.colaboraboard.databinding.AppBarMainBinding
+import com.example.colaboraboard.databinding.NavHeaderMainBinding
+import com.example.colaboraboard.firebase.FirestoreClass
+import com.example.colaboraboard.models.User
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 
+
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
-    private lateinit var barBinding: AppBarMainBinding
-    private lateinit var drawerBinding: ActivityMainBinding
+    private lateinit var mainBinding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        drawerBinding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(drawerBinding.root)
-        //setContentView(binding.root)
+        mainBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(mainBinding.root)
+        //setContentView(R.layout.activity_main)
 
         setUpActionBar()
-        drawerBinding.navView.setNavigationItemSelectedListener(this)
+
+        mainBinding.navView.setNavigationItemSelectedListener(this)
+        /*
+        val navView = findViewById<NavigationView>(R.id.nav_view)
+        navView.setNavigationItemSelectedListener(this)
+        */
+
+        FirestoreClass().signInUser(this)
+
         onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if(drawerBinding.drawerLayout.isDrawerOpen(GravityCompat.START)){
-                    drawerBinding.drawerLayout.closeDrawer(GravityCompat.START)
+
+                if(mainBinding.drawerLayout.isDrawerOpen(GravityCompat.START)){
+                    mainBinding.drawerLayout.closeDrawer(GravityCompat.START)
                 }else{
                     doubleBackToExit()
                 }
+                /*
+                val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
+                if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                }else{
+                    doubleBackToExit()
+                }
+                */
             }
         })
     }
 
     private fun setUpActionBar(){
-        barBinding = AppBarMainBinding.inflate(layoutInflater)
-        setSupportActionBar(barBinding.toolbarMainActivity)
-        barBinding.toolbarMainActivity.setNavigationIcon(R.drawable.ic_action_navigation_menu)
-        barBinding.toolbarMainActivity.setNavigationOnClickListener {
+        setSupportActionBar(mainBinding.appBarMain.toolbarMainActivity)
+        mainBinding.appBarMain.toolbarMainActivity.setNavigationIcon(R.drawable.ic_action_navigation_menu)
+        mainBinding.appBarMain.toolbarMainActivity.setNavigationOnClickListener {
             toggleDrawer()
         }
     }
 
     private fun toggleDrawer(){
-        if(drawerBinding.drawerLayout.isDrawerOpen(GravityCompat.START)){
-            drawerBinding.drawerLayout.closeDrawer(GravityCompat.START)
+
+        if(mainBinding.drawerLayout.isDrawerOpen(GravityCompat.START)){
+            mainBinding.drawerLayout.closeDrawer(GravityCompat.START)
         }else{
-            drawerBinding.drawerLayout.openDrawer(GravityCompat.START)
+            mainBinding.drawerLayout.openDrawer(GravityCompat.START)
         }
+        /*
+        val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }else{
+            drawerLayout.openDrawer(GravityCompat.START)
+        }
+        */
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -68,7 +96,25 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 finish()
             }
         }
-        drawerBinding.drawerLayout.closeDrawer(GravityCompat.START)
+        mainBinding.drawerLayout.closeDrawer(GravityCompat.START)
+        //val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
+        //drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    fun updateNavigationUserDetails(user : User){
+        // The instance of the header view of the navigation view.
+        val viewHeader = mainBinding.navView.getHeaderView(0)
+        val headerBinding = viewHeader?.let { NavHeaderMainBinding.bind(it) }
+        headerBinding?.navUserImage?.let {
+            Glide
+                .with(this)
+                .load(user.image) // URL of the image
+                .centerCrop() // Scale type of the image.
+                .placeholder(R.drawable.ic_user_place_holder) // A default place holder
+                .into(it)
+        } // the view in which the image will be loaded.
+
+        headerBinding?.tvUsername?.text = user.name
     }
 }
