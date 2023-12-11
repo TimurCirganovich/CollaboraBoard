@@ -35,6 +35,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         navView.setNavigationItemSelectedListener(this)
         */
 
+        mainBinding.appBarMain.fabCreateBoard.setOnClickListener {
+            startActivity(Intent(this, CreateBoardActivity::class.java))
+        }
+
         FirestoreClass().loadUserData(this)
 
         onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
