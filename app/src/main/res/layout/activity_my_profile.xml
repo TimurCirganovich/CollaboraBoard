@@ -109,6 +109,7 @@
                     android:paddingTop="@dimen/btn_paddingTopBottom"
                     android:paddingBottom="@dimen/btn_paddingTopBottom"
                     android:text="@string/update"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/btn_text_size"/>
                 
             </LinearLayout>

@@ -87,7 +87,7 @@ class MyProfileActivity : BaseActivity() {
         resultLauncher.launch(galleryIntent)
     }
 
-    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
         if(result.resultCode == Activity.RESULT_OK){
             val data: Intent? = result.data
             mSelectedImageFileUri = data?.data
@@ -194,6 +194,7 @@ class MyProfileActivity : BaseActivity() {
 
     fun profileUpdateSuccess(){
         hideProgressDialog()
+        setResult(Activity.RESULT_OK)
         finish()
     }
 }

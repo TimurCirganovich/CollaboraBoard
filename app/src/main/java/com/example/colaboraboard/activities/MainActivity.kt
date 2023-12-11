@@ -1,9 +1,12 @@
 package com.example.colaboraboard.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.GravityCompat
 import com.bumptech.glide.Glide
 import com.example.colaboraboard.R
@@ -17,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var mainBinding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
@@ -81,7 +85,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.nav_my_profile ->{
-                startActivity(Intent(this, MyProfileActivity::class.java))
+                startUpdateActivityAndGetResult.launch(
+                    Intent(this, MyProfileActivity::class.java)
+                )
             }
             R.id.nav_sign_out ->{
                 FirebaseAuth.getInstance().signOut()
@@ -96,6 +102,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         //drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
+
+    private val startUpdateActivityAndGetResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                FirestoreClass().loadUserData(this)
+            } else {
+                Log.e("onActivityResult()", "Profile update cancelled by user")
+            }
+        }
 
     fun updateNavigationUserDetails(user : User){
         // The instance of the header view of the navigation view.
