@@ -132,17 +132,16 @@ class CreateBoardActivity : BaseActivity() {
 
     private fun uploadBoardImage(){
         showProgressDialog(resources.getString(R.string.please_wait))
-            val sRef: StorageReference = FirebaseStorage.getInstance().reference.child(
-                "BOARD_IMAGE" + System.currentTimeMillis() +
-                        "." + getFileExtension(mSelectedImageFileUri)
-            )
-
-            sRef.putFile(mSelectedImageFileUri!!).addOnSuccessListener { taskSnapshot ->
+        val sRef: StorageReference = FirebaseStorage.getInstance().reference.child(
+            "BOARD_IMAGE" + System.currentTimeMillis() +
+                    "." + getFileExtension(mSelectedImageFileUri)
+        )
+        sRef.putFile(mSelectedImageFileUri!!)
+            .addOnSuccessListener { taskSnapshot ->
                 Log.i(
                     "Firebase Board Image URL",
                     taskSnapshot.metadata!!.reference!!.downloadUrl.toString()
                 )
-
                 taskSnapshot.metadata!!.reference!!.downloadUrl.addOnSuccessListener { uri ->
                     Log.i("Downloadable Board Image URL", uri.toString())
                     mBoardImageURL = uri.toString()

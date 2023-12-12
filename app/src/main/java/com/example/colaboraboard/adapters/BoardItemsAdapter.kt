@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.colaboraboard.R
 import com.example.colaboraboard.models.Board
+import de.hdodenhof.circleimageview.CircleImageView
 
 open class BoardItemsAdapter(
     private val conext: Context,
@@ -39,7 +40,7 @@ open class BoardItemsAdapter(
                 .load(model.image)
                 .centerCrop()
                 .placeholder(R.drawable.ic_board_place_holder)
-                .into(holder.itemView.findViewById(R.id.iv_list_board_image))
+                .into(holder.itemView.findViewById<CircleImageView>(R.id.iv_list_board_image))
 
             holder.itemView.findViewById<TextView>(R.id.tv_board_name).text = model.name
             holder.itemView.findViewById<TextView>(R.id.tv_board_created_by).text = "Created By: ${model.createdBy}"

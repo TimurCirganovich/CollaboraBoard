@@ -5,14 +5,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.GravityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.colaboraboard.R
+import com.example.colaboraboard.adapters.BoardItemsAdapter
 import com.example.colaboraboard.databinding.ActivityMainBinding
 import com.example.colaboraboard.databinding.NavHeaderMainBinding
 import com.example.colaboraboard.firebase.FirestoreClass
+import com.example.colaboraboard.models.Board
 import com.example.colaboraboard.models.User
 import com.example.colaboraboard.utils.Constants
 import com.google.android.material.navigation.NavigationView
@@ -44,7 +48,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         }
 
-        FirestoreClass().loadUserData(this)
+        FirestoreClass().loadUserData(this, true)
 
         onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -64,6 +68,24 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 */
             }
         })
+    }
+
+    fun populateBoardListToUI(boardsList: ArrayList<Board>){
+        hideProgressDialog()
+
+        if(boardsList.size > 0){
+            mainBinding.appBarMain.mainContent.rvBoardsList.visibility = View.VISIBLE
+            mainBinding.appBarMain.mainContent.tvNoBoardsAvailable.visibility = View.GONE
+
+            mainBinding.appBarMain.mainContent.rvBoardsList.layoutManager = LinearLayoutManager(this)
+            mainBinding.appBarMain.mainContent.rvBoardsList.setHasFixedSize(true)
+
+            val adapter = BoardItemsAdapter(this, boardsList)
+            mainBinding.appBarMain.mainContent.rvBoardsList.adapter = adapter
+        }else{
+            mainBinding.appBarMain.mainContent.rvBoardsList.visibility = View.GONE
+            mainBinding.appBarMain.mainContent.tvNoBoardsAvailable.visibility = View.VISIBLE
+        }
     }
 
     private fun setUpActionBar(){
@@ -121,7 +143,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
         }
 
-    fun updateNavigationUserDetails(user : User){
+    fun updateNavigationUserDetails(user : User, readBoardsList: Boolean){
         mUserName = user.name
         // The instance of the header view of the navigation view.
         val viewHeader = mainBinding.navView.getHeaderView(0)
@@ -136,5 +158,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         } // the view in which the image will be loaded.
 
         headerBinding?.tvUsername?.text = user.name
+
+        if(readBoardsList){
+            showProgressDialog(resources.getString(R.string.please_wait))
+            FirestoreClass().getBoardsList(this)
+        }
     }
 }

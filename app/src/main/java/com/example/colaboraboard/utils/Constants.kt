@@ -10,5 +10,6 @@ object Constants {
     const val READ_STORAGE_PERMISSION_CODE = 1
     //Board
     const val BOARDS: String = "boards"
+    const val ASSIGNED_TO: String = "assignedTo"
 
 }
