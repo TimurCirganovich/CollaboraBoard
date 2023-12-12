@@ -8,6 +8,7 @@ import com.example.colaboraboard.activities.MainActivity
 import com.example.colaboraboard.activities.MyProfileActivity
 import com.example.colaboraboard.activities.SignInActivity
 import com.example.colaboraboard.activities.SignUpActivity
+import com.example.colaboraboard.activities.TaskListActivity
 import com.example.colaboraboard.models.Board
 import com.example.colaboraboard.models.User
 import com.example.colaboraboard.utils.Constants
@@ -28,6 +29,19 @@ class FirestoreClass {
             }.addOnFailureListener {
                 e->
                 Log.e(activity.javaClass.simpleName, "Error writing document", e)
+            }
+    }
+
+    fun getBoardDetails(activity: TaskListActivity, documentId: String){
+        mFireStore.collection(Constants.BOARDS)
+            .document(documentId)
+            .get()
+            .addOnSuccessListener { document ->
+                Log.i(activity.javaClass.simpleName, document.toString())
+                activity.boardDetails(document.toObject(Board::class.java)!!)
+            }.addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error while getting board details.", e)
             }
     }
 

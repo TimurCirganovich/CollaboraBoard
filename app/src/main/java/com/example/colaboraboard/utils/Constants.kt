@@ -11,5 +11,7 @@ object Constants {
     //Board
     const val BOARDS: String = "boards"
     const val ASSIGNED_TO: String = "assignedTo"
+    //Task
+    const val DOCUMENT_ID: String = "documentId"
 
 }

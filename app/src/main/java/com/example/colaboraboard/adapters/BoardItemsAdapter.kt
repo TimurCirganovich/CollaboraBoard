@@ -59,6 +59,10 @@ open class BoardItemsAdapter(
         }
     }
 
+    fun setOnClickListener(onClickListener: OnClickListener){
+        this.onClickListener = onClickListener
+    }
+
     private class MyViewHolder(view: View): RecyclerView.ViewHolder(view)
 
 }
