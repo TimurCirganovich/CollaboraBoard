@@ -44,7 +44,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         mainBinding.appBarMain.fabCreateBoard.setOnClickListener {
             val intent = Intent(this, CreateBoardActivity::class.java)
             intent.putExtra(Constants.NAME, mUserName)
-            startActivity(intent)
+            boardLauncher.launch(intent)
 
         }
 
@@ -142,6 +142,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 Log.e("onActivityResult()", "Profile update cancelled by user")
             }
         }
+
+    private val boardLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+        if(result.resultCode == Activity.RESULT_OK){
+            FirestoreClass().getBoardsList(this)
+        }else {
+            Log.e("onActivityResult()", "Creating board cancelled by user")
+        }
+    }
 
     fun updateNavigationUserDetails(user : User, readBoardsList: Boolean){
         mUserName = user.name
