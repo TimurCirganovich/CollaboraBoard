@@ -1,15 +1,8 @@
 package com.example.colaboraboard.activities
 
 import android.content.Intent
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.WindowInsets
-import android.view.WindowManager
-import androidx.appcompat.widget.AppCompatButton
-import com.example.colaboraboard.R
 import com.example.colaboraboard.databinding.ActivityIntroBinding
-import com.example.colaboraboard.databinding.DialogProgressBinding
 
 class IntroActivity : BaseActivity() {
     private lateinit var binding: ActivityIntroBinding
@@ -20,15 +13,7 @@ class IntroActivity : BaseActivity() {
         setContentView(binding.root)
 
 
-        //Hides the status bar on different android versions
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.insetsController?.hide(WindowInsets.Type.statusBars())
-        } else {
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN
-            )
-        }
+        makeFullScreen()
 
         //Opens the SignIn screen
         //val btnSignIn = findViewById<AppCompatButton>(R.id.btn_sign_in_intro)

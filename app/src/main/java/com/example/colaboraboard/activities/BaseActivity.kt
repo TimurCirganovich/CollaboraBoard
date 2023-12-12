@@ -1,9 +1,14 @@
 package com.example.colaboraboard.activities
 
 import android.app.Dialog
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.WindowInsets
+import android.view.WindowManager
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -20,7 +25,17 @@ open class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_base)
     }
-
+    fun makeFullScreen(){
+        //Hides the status bar on different android versions
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.hide(WindowInsets.Type.statusBars())
+        } else {
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+        }
+    }
     fun showProgressDialog(text: String){
         mProgressDialog = Dialog(this)
 
@@ -71,5 +86,11 @@ open class BaseActivity : AppCompatActivity() {
         val snackBarView = snackBar.view
         snackBarView.setBackgroundColor(ContextCompat.getColor(this, R.color.snacbar_error))
         snackBar.show()
+    }
+
+    fun getFileExtension(uri: Uri?): String?{
+        return MimeTypeMap.getSingleton().getExtensionFromMimeType(
+            contentResolver.getType(uri!!)
+        )
     }
 }

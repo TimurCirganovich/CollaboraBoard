@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -25,10 +24,6 @@ import java.io.IOException
 
 class MyProfileActivity : BaseActivity() {
     private lateinit var profileBinding: ActivityMyProfileBinding
-
-    companion object{
-        private const val READ_STORAGE_PERMISSION_CODE = 1
-    }
 
     private var mSelectedImageFileUri: Uri? = null
     private var mProfileImageURL: String = ""
@@ -52,7 +47,7 @@ class MyProfileActivity : BaseActivity() {
                 ActivityCompat.requestPermissions(
                     this,
                     arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                    READ_STORAGE_PERMISSION_CODE
+                    Constants.READ_STORAGE_PERMISSION_CODE
                 )
             }
         }
@@ -69,7 +64,7 @@ class MyProfileActivity : BaseActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(requestCode == READ_STORAGE_PERMISSION_CODE){
+        if(requestCode == Constants.READ_STORAGE_PERMISSION_CODE){
             if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 showImageChooser()
             }
@@ -87,7 +82,7 @@ class MyProfileActivity : BaseActivity() {
         resultLauncher.launch(galleryIntent)
     }
 
-    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
         if(result.resultCode == Activity.RESULT_OK){
             val data: Intent? = result.data
             mSelectedImageFileUri = data?.data
@@ -153,7 +148,6 @@ class MyProfileActivity : BaseActivity() {
 
         if (anyChangesMade){
             FirestoreClass().updateUserProfileData(this, userHashMap)
-
         }
     }
 
@@ -186,11 +180,7 @@ class MyProfileActivity : BaseActivity() {
             }
         }
     }
-    private fun getFileExtension(uri: Uri?): String?{
-        return MimeTypeMap.getSingleton().getExtensionFromMimeType(
-            contentResolver.getType(uri!!)
-        )
-    }
+
 
     fun profileUpdateSuccess(){
         hideProgressDialog()

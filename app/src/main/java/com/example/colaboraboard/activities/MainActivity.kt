@@ -14,12 +14,14 @@ import com.example.colaboraboard.databinding.ActivityMainBinding
 import com.example.colaboraboard.databinding.NavHeaderMainBinding
 import com.example.colaboraboard.firebase.FirestoreClass
 import com.example.colaboraboard.models.User
+import com.example.colaboraboard.utils.Constants
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var mainBinding: ActivityMainBinding
+    private lateinit var mUserName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +38,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         */
 
         mainBinding.appBarMain.fabCreateBoard.setOnClickListener {
-            startActivity(Intent(this, CreateBoardActivity::class.java))
+            val intent = Intent(this, CreateBoardActivity::class.java)
+            intent.putExtra(Constants.NAME, mUserName)
+            startActivity(intent)
+
         }
 
         FirestoreClass().loadUserData(this)
@@ -117,6 +122,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
 
     fun updateNavigationUserDetails(user : User){
+        mUserName = user.name
         // The instance of the header view of the navigation view.
         val viewHeader = mainBinding.navView.getHeaderView(0)
         val headerBinding = viewHeader?.let { NavHeaderMainBinding.bind(it) }
