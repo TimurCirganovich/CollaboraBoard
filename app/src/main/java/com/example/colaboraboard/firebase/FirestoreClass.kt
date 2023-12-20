@@ -15,7 +15,6 @@ import com.example.colaboraboard.utils.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.toObject
 
 class FirestoreClass {
 
@@ -38,7 +37,9 @@ class FirestoreClass {
             .get()
             .addOnSuccessListener { document ->
                 Log.i(activity.javaClass.simpleName, document.toString())
-                activity.boardDetails(document.toObject(Board::class.java)!!)
+                val board = document.toObject(Board::class.java)!!
+                board.documentID = document.id
+                activity.boardDetails(board)
             }.addOnFailureListener { e ->
                 activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error while getting board details.", e)
@@ -86,6 +87,23 @@ class FirestoreClass {
             }
     }
 
+    fun addUpdateTaskList(activity: TaskListActivity, board: Board){
+        val taskListHashMap = HashMap<String, Any>()
+        taskListHashMap[Constants.TASK_LIST] = board.taskList
+
+        mFireStore.collection(Constants.BOARDS)
+            .document(board.documentID)
+            .update(taskListHashMap)
+            .addOnSuccessListener {
+                Log.i(activity.javaClass.simpleName, "TaskList updated successfully!")
+
+                activity.addUpdateTaskListSuccess()
+            }.addOnFailureListener { exception ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "TaskList update error.", exception)
+            }
+    }
+
     fun updateUserProfileData(activity: MyProfileActivity, userHashMap: HashMap<String, Any>){
         mFireStore.collection(Constants.USERS)
             .document(getCurrentUserId())
@@ -98,9 +116,9 @@ class FirestoreClass {
                     Toast.LENGTH_SHORT
                 ).show()
                 activity.profileUpdateSuccess()
-            }.addOnFailureListener { e ->
+            }.addOnFailureListener { exception ->
                 activity.hideProgressDialog()
-                Log.e(activity.javaClass.simpleName, "Profile data updating error!")
+                Log.e(activity.javaClass.simpleName, "Profile data updating error!", exception)
                 Toast.makeText(
                     activity,
                     "Error when updating profile!",
