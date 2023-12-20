@@ -1,11 +1,13 @@
 package com.example.colaboraboard.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.colaboraboard.R
+import com.example.colaboraboard.adapters.TaskListItemsAdapter
 import com.example.colaboraboard.databinding.ActivityTaskListBinding
 import com.example.colaboraboard.firebase.FirestoreClass
 import com.example.colaboraboard.models.Board
+import com.example.colaboraboard.models.Task
 import com.example.colaboraboard.utils.Constants
 
 class TaskListActivity : BaseActivity() {
@@ -41,5 +43,17 @@ class TaskListActivity : BaseActivity() {
     fun boardDetails(board: Board){
         hideProgressDialog()
         setUpActionBar(board.name)
+
+        val addTaskList = Task(resources.getString(R.string.add_list))
+        board.taskList.add(addTaskList)
+
+        taskListBinding.rvTaskList.layoutManager = LinearLayoutManager(
+            this,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+        taskListBinding.rvTaskList.setHasFixedSize(true)
+        val adapter = TaskListItemsAdapter(this, board.taskList)
+        taskListBinding.rvTaskList.adapter = adapter
     }
 }
