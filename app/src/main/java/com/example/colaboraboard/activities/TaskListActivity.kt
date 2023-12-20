@@ -15,7 +15,6 @@ class TaskListActivity : BaseActivity() {
     private lateinit var taskListBinding: ActivityTaskListBinding
 
     private lateinit var mBoardDetails: Board
-    private var mLastTaskIndex: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         taskListBinding = ActivityTaskListBinding.inflate(layoutInflater)
@@ -71,10 +70,24 @@ class TaskListActivity : BaseActivity() {
 
     fun createTaskList(taskListName: String){
         val task = Task(taskListName, FirestoreClass().getCurrentUserId())
-        mBoardDetails.taskList.add(mLastTaskIndex, task)
-        mLastTaskIndex++
+        mBoardDetails.taskList.add(mBoardDetails.taskList.lastIndex, task)
         mBoardDetails.taskList.removeAt(mBoardDetails.taskList.size - 1)
+        showProgressDialog(resources.getString(R.string.please_wait))
+        FirestoreClass().addUpdateTaskList(this, mBoardDetails)
+    }
 
+
+    fun updateTaskList(position: Int, listName: String, model: Task){
+        val task = Task(listName, model.createdBy)
+        mBoardDetails.taskList[position] = task
+        mBoardDetails.taskList.removeAt(mBoardDetails.taskList.size - 1)
+        showProgressDialog(resources.getString(R.string.please_wait))
+        FirestoreClass().addUpdateTaskList(this, mBoardDetails)
+    }
+
+    fun deleteTaskList(position: Int){
+        mBoardDetails.taskList.removeAt(position)
+        mBoardDetails.taskList.removeAt(mBoardDetails.taskList.size - 1)
         showProgressDialog(resources.getString(R.string.please_wait))
         FirestoreClass().addUpdateTaskList(this, mBoardDetails)
     }

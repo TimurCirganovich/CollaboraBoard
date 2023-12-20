@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.colaboraboard.R
@@ -74,12 +75,63 @@ open class TaskListItemsAdapter(
                 }else{
                     Toast.makeText(
                         context,
-                        "Please Enter List Name",
+                        "Please Enter a List Name",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             }
+
+            holder.itemView.findViewById<ImageButton>(R.id.ib_edit_list_name).setOnClickListener {
+                holder.itemView.findViewById<EditText>(R.id.et_edit_task_list_name).setText(model.title)
+                holder.itemView.findViewById<LinearLayout>(R.id.ll_title_view).visibility = View.GONE
+                holder.itemView.findViewById<CardView>(R.id.cv_edit_task_list_name).visibility = View.VISIBLE
+            }
+
+            holder.itemView.findViewById<ImageButton>(R.id.ib_close_editable_view).setOnClickListener {
+                holder.itemView.findViewById<LinearLayout>(R.id.ll_title_view).visibility = View.VISIBLE
+                holder.itemView.findViewById<CardView>(R.id.cv_edit_task_list_name).visibility = View.GONE
+            }
+
+            holder.itemView.findViewById<ImageButton>(R.id.ib_done_edit_list_name).setOnClickListener {
+                val listName = holder.itemView.findViewById<EditText>(R.id.et_edit_task_list_name).text.toString()
+                if(listName.isNotEmpty()){
+                    if(context is TaskListActivity){
+                        context.updateTaskList(position, listName, model)
+                    }
+                }else{
+                    Toast.makeText(
+                        context,
+                        "Please Enter a List Name",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            holder.itemView.findViewById<ImageButton>(R.id.ib_delete_list).setOnClickListener {
+                alertDialogForDeleteList(position, model.title)
+            }
         }
+    }
+
+    private fun alertDialogForDeleteList(position: Int, title: String){
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Alert")
+        builder.setMessage("Are you sure you want to delete $title?")
+        builder.setIcon(R.drawable.ic_dialog_alert)
+        //performing positive action
+        builder.setPositiveButton("Yes") { dialogInterface, _ ->
+            dialogInterface.dismiss()
+            if(context is TaskListActivity){
+                context.deleteTaskList(position)
+            }
+        }
+        //performing negative action
+        builder.setNegativeButton("No") { dialogInterface, _ ->
+            dialogInterface.dismiss()
+        }
+        //creating and showing dialog
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.setCancelable(false)
+        alertDialog.show()
     }
 
     private fun Int.toDp(): Int = (this / Resources.getSystem().displayMetrics.density).toInt()
