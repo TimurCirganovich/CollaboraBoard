@@ -7,6 +7,7 @@ import com.example.colaboraboard.adapters.TaskListItemsAdapter
 import com.example.colaboraboard.databinding.ActivityTaskListBinding
 import com.example.colaboraboard.firebase.FirestoreClass
 import com.example.colaboraboard.models.Board
+import com.example.colaboraboard.models.Card
 import com.example.colaboraboard.models.Task
 import com.example.colaboraboard.utils.Constants
 
@@ -88,6 +89,29 @@ class TaskListActivity : BaseActivity() {
     fun deleteTaskList(position: Int){
         mBoardDetails.taskList.removeAt(position)
         mBoardDetails.taskList.removeAt(mBoardDetails.taskList.size - 1)
+        showProgressDialog(resources.getString(R.string.please_wait))
+        FirestoreClass().addUpdateTaskList(this, mBoardDetails)
+    }
+
+    fun addCardToTaskList(position: Int, cardName: String){
+        mBoardDetails.taskList.removeAt(mBoardDetails.taskList.size - 1)
+        val cardAssignedUsersList: ArrayList<String> = ArrayList()
+        val currUser = FirestoreClass().getCurrentUserId()
+        cardAssignedUsersList.add(currUser)
+
+        val card = Card(cardName, currUser, cardAssignedUsersList)
+
+        val cardsList = mBoardDetails.taskList[position].cards
+        cardsList.add(card)
+
+        val task = Task(
+            mBoardDetails.taskList[position].title,
+            mBoardDetails.taskList[position].createdBy,
+            cardsList
+        )
+
+        mBoardDetails.taskList[position] = task
+
         showProgressDialog(resources.getString(R.string.please_wait))
         FirestoreClass().addUpdateTaskList(this, mBoardDetails)
     }
