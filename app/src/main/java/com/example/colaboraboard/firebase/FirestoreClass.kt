@@ -16,7 +16,6 @@ import com.example.colaboraboard.utils.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.toObject
 
 class FirestoreClass {
 
@@ -135,8 +134,11 @@ class FirestoreClass {
             .addOnSuccessListener { document ->
                 val loggedInUser = document.toObject(User::class.java)!!
                 when(activity){
+                    is SignUpActivity ->{
+                        activity.autoSignInSuccess()
+                    }
                     is SignInActivity ->{
-                        activity.signInSuccess(loggedInUser)
+                        activity.signInSuccess()
                     }
                     is MainActivity ->{
                         activity.updateNavigationUserDetails(loggedInUser, readBoardsList)
@@ -148,6 +150,9 @@ class FirestoreClass {
             }.addOnFailureListener {
                     e->
                 when(activity){
+                    is SignUpActivity ->{
+                        activity.hideProgressDialog()
+                    }
                     is SignInActivity ->{
                         activity.hideProgressDialog()
                     }
@@ -217,7 +222,7 @@ class FirestoreClass {
                 activity.memberAssignSuccess(user)
             }.addOnFailureListener{ e ->
                 activity.hideProgressDialog()
-                Log.e(activity.javaClass.simpleName, "Error while assigning member to a board", e)
+                Log.e(activity.javaClass.simpleName, "Error while searching user via email.", e)
             }
     }
 }

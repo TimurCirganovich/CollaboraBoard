@@ -1,8 +1,10 @@
 package com.example.colaboraboard.activities
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
@@ -15,10 +17,16 @@ import com.google.firebase.auth.FirebaseUser
 
 class SignUpActivity : BaseActivity() {
     private lateinit var binding: ActivitySignUpBinding
+
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //Initialize the Firebase variable
+        auth = FirebaseAuth.getInstance()
 
         //Hides the status bar on different android versions
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -33,21 +41,8 @@ class SignUpActivity : BaseActivity() {
         setupActionBar()
     }
 
-    fun userRegisteredSuccess(){
-        Toast.makeText(
-            this,
-            "You have successfully registered!",
-            Toast.LENGTH_LONG
-        ).show()
-        hideProgressDialog()
-        FirebaseAuth.getInstance().signOut()
-        finish()
-    }
-
     //Set the button to go bac to the Intro screen
     private fun setupActionBar(){
-        //val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar_sign_up_activity)
-        //setSupportActionBar(toolbar)
         setSupportActionBar(binding.toolbarSignUpActivity)
         val actionBar = supportActionBar
         if (actionBar != null){
@@ -55,33 +50,17 @@ class SignUpActivity : BaseActivity() {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
         }
 
-        //toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
         binding.toolbarSignUpActivity.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
 
-        /*
-        val btnSignUp = findViewById<AppCompatButton>(R.id.btn_sign_up)
-        btnSignUp.setOnClickListener {
-            registerUser()
-        }
-        */
         binding.btnSignUp.setOnClickListener {
             registerUser()
         }
     }
 
     private fun registerUser(){
-        /*
-        val etName = findViewById<EditText>(R.id.et_name)
-        val name: String = etName.text.toString().trim { it <= ' ' }
-        val etEmail = findViewById<EditText>(R.id.et_email)
-        val email: String = etEmail.text.toString().trim { it <= ' ' }
-        val etPassword = findViewById<EditText>(R.id.et_password)
-        val password: String = etPassword.text.toString().trim { it <= ' ' }
-        */
         val name: String = binding.etName.text.toString().trim { it <= ' ' }
         val email: String = binding.etEmail.text.toString().trim { it <= ' ' }
         val password: String = binding.etPassword.text.toString().trim { it <= ' ' }
-
 
         if(validateForm(name, email, password)){
             showProgressDialog(resources.getString(R.string.please_wait))
@@ -120,5 +99,46 @@ class SignUpActivity : BaseActivity() {
                 true
             }
         }
+    }
+
+    fun userRegisteredSuccess(){
+        Toast.makeText(
+            this,
+            "You have successfully registered!",
+            Toast.LENGTH_LONG
+        ).show()
+        hideProgressDialog()
+        auth.signOut()
+        autoSignIn()
+    }
+
+    private fun autoSignIn(){
+        val email: String = binding.etEmail.text.toString().trim { it <= ' ' }
+        val password: String = binding.etPassword.text.toString().trim { it <= ' ' }
+
+        showProgressDialog(resources.getString(R.string.please_wait))
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                hideProgressDialog()
+                if (task.isSuccessful) {
+                    // Sign in success
+                    Log.d("SignUp", "signInWithEmail:success")
+                    FirestoreClass().loadUserData(this)
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w("SignUp", "signInWithEmail:failure", task.exception)
+                    Toast.makeText(
+                        this@SignUpActivity,
+                        task.exception!!.message,
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
+            }
+    }
+
+    fun autoSignInSuccess(){
+        hideProgressDialog()
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 }

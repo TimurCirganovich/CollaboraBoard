@@ -43,24 +43,14 @@ class SignInActivity : BaseActivity() {
         setupActionBar()
     }
 
-    fun signInSuccess(user: User){
-        hideProgressDialog()
-        startActivity(Intent(this, MainActivity::class.java))
-        finish()
-    }
-
     //Set the button to go back to the Intro screen
     private fun setupActionBar(){
-        //val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar_sign_in_activity)
-        //setSupportActionBar(toolbar)
         setSupportActionBar(binding.toolbarSignInActivity)
         val actionBar = supportActionBar
         if (actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true)
             actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
         }
-
-        //toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
         binding.toolbarSignInActivity.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 
@@ -104,4 +94,11 @@ class SignInActivity : BaseActivity() {
             }
         }
     }
+
+    fun signInSuccess(){
+        hideProgressDialog()
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
+    }
+
 }
