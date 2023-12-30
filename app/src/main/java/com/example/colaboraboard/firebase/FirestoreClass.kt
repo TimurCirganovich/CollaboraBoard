@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import com.example.colaboraboard.activities.CreateBoardActivity
 import com.example.colaboraboard.activities.MainActivity
+import com.example.colaboraboard.activities.MembersActivity
 import com.example.colaboraboard.activities.MyProfileActivity
 import com.example.colaboraboard.activities.SignInActivity
 import com.example.colaboraboard.activities.SignUpActivity
@@ -15,6 +16,7 @@ import com.example.colaboraboard.utils.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.toObject
 
 class FirestoreClass {
 
@@ -166,5 +168,23 @@ class FirestoreClass {
             currentUserID = currentUser.uid
         }
         return currentUserID
+    }
+
+    fun getAssignedMembersListDetails(activity: MembersActivity, assignedTo: ArrayList<String>){
+        mFireStore.collection(Constants.USERS)
+            .whereIn(Constants.ID, assignedTo).get()
+            .addOnSuccessListener { document ->
+                Log.e(activity.javaClass.simpleName, document.documents.toString())
+                val usersList: ArrayList<User> = ArrayList()
+                for (i in document.documents){
+                    val user = i.toObject(User::class.java)!!
+                    usersList.add(user)
+                }
+
+                activity.setupMembersList(usersList)
+            }.addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error while getting users list.", e)
+            }
     }
 }
