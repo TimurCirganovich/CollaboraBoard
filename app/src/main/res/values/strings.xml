@@ -37,5 +37,11 @@
     <string name="add_list">Add List</string>
     <!--MembersActivity-->
     <string name="members">Members</string>
+    <!--AddMemberMenu-->
+    <string name="add_member">Add Member</string>
+    <string name="cancel">Cancel</string>
+    <string name="add">Add</string>
+    <string name="search_member">Add Member</string>
+
     <!---->
 </resources>

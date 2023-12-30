@@ -6,6 +6,7 @@ object Constants {
     const val IMAGE: String = "image"
     const val NAME: String = "name"
     const val MOBILE: String = "mobile"
+    const val EMAIL: String = "email"
     //Permission
     const val READ_STORAGE_PERMISSION_CODE = 1
     //Board
