@@ -1,6 +1,7 @@
 package com.example.colaboraboard.activities
 
 import android.app.Activity
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
@@ -9,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.colaboraboard.R
 import com.example.colaboraboard.databinding.ActivityCardDetailsBinding
+import com.example.colaboraboard.dialogs.LabelColorListDialog
 import com.example.colaboraboard.firebase.FirestoreClass
 import com.example.colaboraboard.models.Board
 import com.example.colaboraboard.models.Card
@@ -21,6 +23,9 @@ class CardDetailsActivity : BaseActivity() {
     private lateinit var mBoardDetails: Board
     private var mTaskListPosition = -1
     private var mCardPosition = -1
+
+    private var mSelectedColor: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         cardDetailsBinding = ActivityCardDetailsBinding.inflate(layoutInflater)
@@ -41,6 +46,11 @@ class CardDetailsActivity : BaseActivity() {
             cardDetailsBinding.etNameCardDetails.text.toString().length
         )
 
+        mSelectedColor = mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].labelColor
+        if (mSelectedColor.isNotEmpty()){
+            setColor()
+        }
+
         cardDetailsBinding.btnUpdateCardDetails.setOnClickListener {
             if (cardDetailsBinding.etNameCardDetails.text.toString().isNotEmpty()){
                 updateCardDetails()
@@ -51,6 +61,10 @@ class CardDetailsActivity : BaseActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+        }
+
+        cardDetailsBinding.tvSelectLabelColor.setOnClickListener {
+            labelColorsListDialog()
         }
 
     }
@@ -118,7 +132,8 @@ class CardDetailsActivity : BaseActivity() {
         val card = Card(
             cardDetailsBinding.etNameCardDetails.text.toString(),
             mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].createdBy,
-            mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].assignedTo
+            mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].assignedTo,
+            mSelectedColor
         )
         mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition] = card
         mBoardDetails.taskList.removeAt(mBoardDetails.taskList.size-1)
@@ -141,21 +156,55 @@ class CardDetailsActivity : BaseActivity() {
 
     private fun alertDialogForDeleteCard(cardName: String){
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Alert")
-        builder.setMessage("Are you sure you want to delete \"$cardName\"?")
+        builder.setTitle(resources.getString(R.string.alert))
+        builder.setMessage(resources.getString(R.string.confirmation_message_to_delete, cardName))
         builder.setIcon(R.drawable.ic_dialog_alert)
         //performing positive action
-        builder.setPositiveButton("Yes") { dialogInterface, _ ->
+        builder.setPositiveButton(resources.getString(R.string.yes)) { dialogInterface, _ ->
             dialogInterface.dismiss()
             deleteCard()
         }
         //performing negative action
-        builder.setNegativeButton("No") { dialogInterface, _ ->
+        builder.setNegativeButton(resources.getString(R.string.no)) { dialogInterface, _ ->
             dialogInterface.dismiss()
         }
 
         val alertDialog: AlertDialog = builder.create() //creating a dialog
         alertDialog.setCancelable(false)
         alertDialog.show()
+    }
+
+    private fun colorsList(): ArrayList<String>{
+        val colorsList: ArrayList<String> = ArrayList()
+        colorsList.add("#0C90F1")
+        colorsList.add("#FF3747")
+        colorsList.add("#4FCBBB")
+        colorsList.add("#EF39A7")
+        colorsList.add("#FFAE90")
+        colorsList.add("#FFD600")
+        //TODO: functional to add custom colors
+        return colorsList
+    }
+
+    private fun setColor(){
+        cardDetailsBinding.tvSelectLabelColor.text = ""
+        cardDetailsBinding.tvSelectLabelColor.setBackgroundColor(Color.parseColor(mSelectedColor))
+    }
+
+    private fun labelColorsListDialog(){
+        val colorsList: ArrayList<String> = colorsList()
+        val listDialog = object : LabelColorListDialog(
+            this,
+            colorsList,
+            resources.getString(R.string.select_label_color),
+            mSelectedColor
+        ){
+            override fun onItemSelected(color: String) {
+                mSelectedColor = color
+                setColor()
+            }
+
+        }
+        listDialog.show()
     }
 }

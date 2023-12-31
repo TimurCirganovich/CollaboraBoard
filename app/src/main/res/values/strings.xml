@@ -49,5 +49,12 @@
     <string name="due_date">Due Date</string>
     <string name="select_due_date">Select Due Date</string>
     <string name="delete_card">Delete Card</string>
+
+    <string name="select_label_color">Select Label Color</string>
+    <!--AlertDialogs-->
+    <string name="alert">Alert</string>
+    <string name="confirmation_message_to_delete">Are you sure you want to delete \'%1$s\'?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <!---->
 </resources>
