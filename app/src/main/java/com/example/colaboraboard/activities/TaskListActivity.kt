@@ -1,9 +1,12 @@
 package com.example.colaboraboard.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.colaboraboard.R
 import com.example.colaboraboard.adapters.TaskListItemsAdapter
@@ -19,19 +22,18 @@ class TaskListActivity : BaseActivity() {
     private lateinit var taskListBinding: ActivityTaskListBinding
 
     private lateinit var mBoardDetails: Board
+    private lateinit var mBoardDocumentId: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         taskListBinding = ActivityTaskListBinding.inflate(layoutInflater)
         setContentView(taskListBinding.root)
 
-        var boardDocumentId = ""
         if(intent.hasExtra(Constants.DOCUMENT_ID)){
-            boardDocumentId = intent.getStringExtra(Constants.DOCUMENT_ID).toString()
+           mBoardDocumentId = intent.getStringExtra(Constants.DOCUMENT_ID).toString()
         }
 
         showProgressDialog(resources.getString(R.string.please_wait))
-
-        FirestoreClass().getBoardDetails(this, boardDocumentId)
+        FirestoreClass().getBoardDetails(this, mBoardDocumentId)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -44,11 +46,14 @@ class TaskListActivity : BaseActivity() {
             R.id.action_members -> {
                 val intent = Intent(this, MembersActivity::class.java)
                 intent.putExtra(Constants.BOARD_DETAIL, mBoardDetails)
-                startActivity(intent)
+                //startActivity(intent)
+                startActivityAndGetResult.launch(intent)//starts the MembersActivity with check for updates
+                return true
             }
         }
         return super.onOptionsItemSelected(item)
     }
+
     private fun setUpActionBar(){
         setSupportActionBar(taskListBinding.toolbarTaskListActivity)
         val actionBar = supportActionBar
@@ -133,4 +138,25 @@ class TaskListActivity : BaseActivity() {
         showProgressDialog(resources.getString(R.string.please_wait))
         FirestoreClass().addUpdateTaskList(this, mBoardDetails)
     }
+
+    fun cardDetails(taskListPosition: Int, cardPosition: Int){
+        val intent = Intent(this, CardDetailsActivity::class.java)
+        intent.putExtra(Constants.BOARD_DETAIL, mBoardDetails)
+        intent.putExtra(Constants.TASK_LIST_ITEM_POSITION, taskListPosition)
+        intent.putExtra(Constants.CARD_LIST_ITEM_POSITION, cardPosition)
+        //startActivity(intent)
+        startActivityAndGetResult.launch(intent)
+    }
+
+    //If any changes were made, reloads the board UI with updated data
+    private val startActivityAndGetResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                showProgressDialog(resources.getString(R.string.please_wait))
+                FirestoreClass().getBoardDetails(this, mBoardDocumentId)//Get the data about current board
+                Log.i("AnyChanges", "Changes updated")
+            } else {
+                Log.i("AnyChanges", "No changes made")
+            }
+        }
 }

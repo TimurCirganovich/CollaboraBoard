@@ -1,5 +1,6 @@
 package com.example.colaboraboard.activities
 
+import android.app.Activity
 import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
@@ -21,6 +22,7 @@ class MembersActivity : BaseActivity() {
 
     private lateinit var mBoardDetails: Board
     private lateinit var mAssignedMembersList: ArrayList<User>
+    private var anyChangesMade: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         membersBinding = ActivityMembersBinding.inflate(layoutInflater)
@@ -65,7 +67,12 @@ class MembersActivity : BaseActivity() {
             actionBar.title = resources.getString(R.string.members)
         }
 
-        membersBinding.toolbarMembersActivity .setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+        membersBinding.toolbarMembersActivity.setNavigationOnClickListener {
+            if(anyChangesMade){
+                setResult(Activity.RESULT_OK)
+            }
+            onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -110,6 +117,7 @@ class MembersActivity : BaseActivity() {
     fun memberAssignSuccess(user: User){    //Update UI with data after adding a member
         hideProgressDialog()
         mAssignedMembersList.add(user)
+        anyChangesMade = true   //Marks that changes were made
         setupMembersList(mAssignedMembersList)
     }
 

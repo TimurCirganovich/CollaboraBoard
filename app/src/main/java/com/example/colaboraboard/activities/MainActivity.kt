@@ -31,15 +31,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         super.onCreate(savedInstanceState)
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)
-        //setContentView(R.layout.activity_main)
 
         setUpActionBar()
 
         mainBinding.navView.setNavigationItemSelectedListener(this)
-        /*
-        val navView = findViewById<NavigationView>(R.id.nav_view)
-        navView.setNavigationItemSelectedListener(this)
-        */
 
         mainBinding.appBarMain.fabCreateBoard.setOnClickListener {
             val intent = Intent(this, CreateBoardActivity::class.java)
@@ -58,14 +53,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 }else{
                     doubleBackToExit()
                 }
-                /*
-                val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
-                if(drawerLayout.isDrawerOpen(GravityCompat.START)){
-                    drawerLayout.closeDrawer(GravityCompat.START)
-                }else{
-                    doubleBackToExit()
-                }
-                */
             }
         })
     }
@@ -106,20 +93,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private fun toggleDrawer(){
-
         if(mainBinding.drawerLayout.isDrawerOpen(GravityCompat.START)){
             mainBinding.drawerLayout.closeDrawer(GravityCompat.START)
         }else{
             mainBinding.drawerLayout.openDrawer(GravityCompat.START)
         }
-        /*
-        val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
-            drawerLayout.closeDrawer(GravityCompat.START)
-        }else{
-            drawerLayout.openDrawer(GravityCompat.START)
-        }
-        */
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -138,8 +116,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
         }
         mainBinding.drawerLayout.closeDrawer(GravityCompat.START)
-        //val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
-        //drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
 
