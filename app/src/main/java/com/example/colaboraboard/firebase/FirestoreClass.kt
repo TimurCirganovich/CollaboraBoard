@@ -49,8 +49,9 @@ class FirestoreClass {
     }
 
     fun createBoard(activity: CreateBoardActivity, board: Board){
-        mFireStore.collection(Constants.BOARDS)
-            .document().set(board, SetOptions.merge())
+        val documentReference = mFireStore.collection(Constants.BOARDS).document()
+        board.documentID = documentReference.id
+        documentReference.set(board, SetOptions.merge())
             .addOnSuccessListener {
                 Log.i(activity.javaClass.simpleName, "Board created successfully!")
                 Toast.makeText(
