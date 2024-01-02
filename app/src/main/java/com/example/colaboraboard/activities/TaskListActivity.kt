@@ -15,6 +15,7 @@ import com.example.colaboraboard.firebase.FirestoreClass
 import com.example.colaboraboard.models.Board
 import com.example.colaboraboard.models.Card
 import com.example.colaboraboard.models.Task
+import com.example.colaboraboard.models.User
 import com.example.colaboraboard.utils.Constants
 
 class TaskListActivity : BaseActivity() {
@@ -23,6 +24,7 @@ class TaskListActivity : BaseActivity() {
 
     private lateinit var mBoardDetails: Board
     private lateinit var mBoardDocumentId: String
+    private lateinit var mAssignedMembersDetailList: ArrayList<User>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         taskListBinding = ActivityTaskListBinding.inflate(layoutInflater)
@@ -83,6 +85,9 @@ class TaskListActivity : BaseActivity() {
         taskListBinding.rvTaskList.setHasFixedSize(true)
         val adapter = TaskListItemsAdapter(this, board.taskList)
         taskListBinding.rvTaskList.adapter = adapter
+
+        showProgressDialog(resources.getString(R.string.please_wait))
+        FirestoreClass().getAssignedMembersListDetails(this, mBoardDetails.assignedTo)
     }
 
     fun addUpdateTaskListSuccess(){
@@ -144,7 +149,7 @@ class TaskListActivity : BaseActivity() {
         intent.putExtra(Constants.BOARD_DETAIL, mBoardDetails)
         intent.putExtra(Constants.TASK_LIST_ITEM_POSITION, taskListPosition)
         intent.putExtra(Constants.CARD_LIST_ITEM_POSITION, cardPosition)
-        //startActivity(intent)
+        intent.putExtra(Constants.BOARD_MEMBERS_LIST, mAssignedMembersDetailList)
         startActivityAndGetResult.launch(intent)
     }
 
@@ -159,4 +164,11 @@ class TaskListActivity : BaseActivity() {
                 Log.i("AnyChanges", "No changes made")
             }
         }
+
+    fun boardMembersDetailsList(list: ArrayList<User>){
+        mAssignedMembersDetailList = list
+        hideProgressDialog()
+
+
+    }
 }

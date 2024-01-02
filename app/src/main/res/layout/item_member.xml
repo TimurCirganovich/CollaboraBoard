@@ -24,9 +24,10 @@
             app:civ_border_width="@dimen/item_member_image_circular_width_size" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/item_member_detail_layout_marginStart"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
@@ -47,6 +48,17 @@
 
 
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_selected_member"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginEnd="@dimen/item_label_color_selected_image_marginEnd"
+            android:contentDescription="@string/image_contentDescription"
+            android:src="@drawable/ic_done"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
     </LinearLayout>
 
