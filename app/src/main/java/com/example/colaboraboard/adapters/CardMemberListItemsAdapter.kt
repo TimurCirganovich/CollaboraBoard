@@ -12,7 +12,8 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 open class CardMemberListItemsAdapter(
     private val context: Context,
-    private val list: ArrayList<SelectedMembers>
+    private val list: ArrayList<SelectedMembers>,
+    private val assignedMembers: Boolean
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var onClickListener: OnClickListener? = null
@@ -35,7 +36,7 @@ open class CardMemberListItemsAdapter(
         val model = list[position]
 
         if (holder is MyViewHolder){
-            if (position == list.size -1){
+            if (position == list.size -1 && assignedMembers){
                 holder.itemView.findViewById<CircleImageView>(R.id.iv_add_member).visibility = View.VISIBLE
                 holder.itemView.findViewById<CircleImageView>(R.id.iv_selected_member_image).visibility = View.GONE
             }else{
@@ -64,7 +65,7 @@ open class CardMemberListItemsAdapter(
         fun onClick()
     }
 
-    fun setOnClockListener(onClickListener: OnClickListener){
+    fun setOnClickListener(onClickListener: OnClickListener){
         this.onClickListener = onClickListener
     }
 }

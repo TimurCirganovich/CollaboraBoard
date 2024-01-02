@@ -1,7 +1,9 @@
 package com.example.colaboraboard.activities
 
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.graphics.Color
+import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
@@ -22,6 +24,9 @@ import com.example.colaboraboard.models.SelectedMembers
 import com.example.colaboraboard.models.Task
 import com.example.colaboraboard.models.User
 import com.example.colaboraboard.utils.Constants
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class CardDetailsActivity : BaseActivity() {
     private lateinit var cardDetailsBinding: ActivityCardDetailsBinding
@@ -33,6 +38,8 @@ class CardDetailsActivity : BaseActivity() {
     private var mSelectedColor: String = ""
 
     private lateinit var mMembersDetailList: ArrayList<User>
+
+    private var mSelectedDueDateMilliseconds: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,6 +87,20 @@ class CardDetailsActivity : BaseActivity() {
         }
 
         setUpSelectedMembersList()
+
+        mSelectedDueDateMilliseconds = mBoardDetails
+            .taskList[mTaskListPosition]
+            .cards[mCardPosition]
+            .dueDate
+        if (mSelectedDueDateMilliseconds > 0){
+            val simpleDateFormat = SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH)
+            val selectedDate = simpleDateFormat.format(Date(mSelectedDueDateMilliseconds))
+            cardDetailsBinding.tvSelectDueDate.text = selectedDate
+        }
+
+        cardDetailsBinding.tvSelectDueDate.setOnClickListener {
+            showDatePicker()
+        }
 
     }
 
@@ -154,7 +175,8 @@ class CardDetailsActivity : BaseActivity() {
             cardDetailsBinding.etNameCardDetails.text.toString(),
             mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].createdBy,
             mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].assignedTo,
-            mSelectedColor
+            mSelectedColor,
+            mSelectedDueDateMilliseconds
         )
 
         mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition] = card
@@ -256,9 +278,9 @@ class CardDetailsActivity : BaseActivity() {
                 this,
                 6
             )
-            val adapter = CardMemberListItemsAdapter(this, selectedMembersList)
+            val adapter = CardMemberListItemsAdapter(this, selectedMembersList, true)
             cardDetailsBinding.rvSelectedMembersList.adapter = adapter
-            adapter.setOnClockListener(
+            adapter.setOnClickListener(
                 object: CardMemberListItemsAdapter.OnClickListener{
                     override fun onClick() {
                         membersListDialog()
@@ -327,5 +349,40 @@ class CardDetailsActivity : BaseActivity() {
             }
         }
         listDialog.show()
+    }
+
+    private fun showDatePicker(){
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(
+            this,
+            DatePickerDialog.OnDateSetListener { _, sYear, monthOfYear, dayOfMonth ->
+                val sDayOfMonth = if(dayOfMonth < 10){
+                    "0$dayOfMonth"
+                }else{
+                    "$dayOfMonth"
+                }
+
+                val sMonthOfYear = if((monthOfYear+1) < 10){
+                    "0${monthOfYear + 1}"
+                }else{
+                    "${monthOfYear + 1}"
+                }
+
+                val selectedDate = "$sDayOfMonth/$sMonthOfYear/$sYear"
+                cardDetailsBinding.tvSelectDueDate.text = selectedDate
+
+                val simpleDateFormat = SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH)
+                val theDate = simpleDateFormat.parse(selectedDate)
+                mSelectedDueDateMilliseconds = theDate!!.time
+            },
+            year,
+            month,
+            day
+        )
+        datePickerDialog.show()
     }
 }
