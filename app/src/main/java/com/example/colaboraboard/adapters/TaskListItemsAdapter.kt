@@ -103,7 +103,7 @@ open class TaskListItemsAdapter(
                 val listName = holder.itemView.findViewById<EditText>(R.id.et_edit_task_list_name).text.toString()
                 if(listName.isNotEmpty()){
                     if(context is TaskListActivity){
-                        context.updateTaskList(position, listName, model)
+                        context.updateTaskList(position, listName)
                     }
                 }else{
                     Toast.makeText(
