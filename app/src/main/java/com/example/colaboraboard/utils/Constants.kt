@@ -25,4 +25,8 @@ object Constants {
     const val BOARD_MEMBERS_LIST: String = "board_members_list"
     const val SELECT: String = "Select"
     const val UN_SELECT: String = "UnSelect"
+    //ColaboraBoardFirebaseMessagingService
+    const val COLABORABOARD_PREFERENCES: String = "ColaboraBoardPrefs"
+    const val FCM_TOKEN_UPDATED: String = "fcmTokenUpdated"
+    const val FCM_TOKEN: String = "fcmToken"
 }

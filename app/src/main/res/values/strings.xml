@@ -56,5 +56,8 @@
     <string name="confirmation_message_to_delete">Are you sure you want to delete \'%1$s\'?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <!--ColaboraBoardFirebaseMessagingService-->
+    <string name="default_notification_channel_id">colaboraboard_notification_channel_id</string>
+    <string name="msg_token_fmt">Token Retrieved</string>
     <!---->
 </resources>
