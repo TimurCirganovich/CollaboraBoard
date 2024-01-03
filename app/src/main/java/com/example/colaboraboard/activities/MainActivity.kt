@@ -21,7 +21,6 @@ import com.example.colaboraboard.firebase.FirestoreClass
 import com.example.colaboraboard.models.Board
 import com.example.colaboraboard.models.User
 import com.example.colaboraboard.utils.Constants
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
@@ -46,15 +45,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             showProgressDialog(resources.getString(R.string.please_wait))
             FirestoreClass().loadUserData(this, true)
         }else{
-            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    Log.w("FCM", "Fetching FCM registration token failed", task.exception)
-                    return@OnCompleteListener
-                }else{
-                    updateFCMToken(task.result)
-                }
-
-            })
+            FirebaseMessaging.getInstance().token.addOnSuccessListener(this@MainActivity) {
+                updateFCMToken(it)
+            }
         }
 
         mainBinding.navView.setNavigationItemSelectedListener(this)

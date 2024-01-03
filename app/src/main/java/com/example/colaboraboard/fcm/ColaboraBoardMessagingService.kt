@@ -5,26 +5,35 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.colaboraboard.R
 import com.example.colaboraboard.activities.MainActivity
+import com.example.colaboraboard.activities.SignInActivity
+import com.example.colaboraboard.firebase.FirestoreClass
+import com.example.colaboraboard.utils.Constants
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
 class ColaboraBoardFirebaseMessagingService: FirebaseMessagingService() {
-    override fun onMessageReceived(message: RemoteMessage) {
-        super.onMessageReceived(message)
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        super.onMessageReceived(remoteMessage)
 
-        Log.d(TAG, "From: ${message.from}")
+        Log.d(TAG, "From: ${remoteMessage.from}")
 
-        message.data.isNotEmpty().let {
-            Log.d(TAG, "Message: ${message.data}")
+        remoteMessage.data.isNotEmpty().let {
+            Log.d(TAG, "Message: ${remoteMessage.data}")
+
+            val title = remoteMessage.data[Constants.FCM_KEY_TITLE]!!
+            val message = remoteMessage.data[Constants.FCM_KEY_MESSAGE]!!
+
+            displayNotification(title, message)
         }
 
-        message.notification?.let {
+        remoteMessage.notification?.let {
             Log.d(TAG, "Message Notification: ${it.body}")
         }
     }
@@ -36,12 +45,24 @@ class ColaboraBoardFirebaseMessagingService: FirebaseMessagingService() {
     }
 
     private fun sendRegistrationToServer(token: String?){
-        TODO("Implement sending")
+        val sharedPreferences =
+            this.getSharedPreferences(Constants.COLABORABOARD_PREFERENCES, Context.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        editor.putString(Constants.FCM_TOKEN, token)
+        editor.apply()
     }
 
-    private fun sendNotification(messageBody: String){
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    private fun displayNotification(title: String, message: String){
+        val intent = if(FirestoreClass().getCurrentUserId().isNotEmpty()){
+            Intent(this, MainActivity::class.java)
+        }else{
+            Intent(this, SignInActivity::class.java)
+        }
+        intent.addFlags(
+            Intent.FLAG_ACTIVITY_NEW_TASK or
+            Intent.FLAG_ACTIVITY_CLEAR_TASK or
+            Intent.FLAG_ACTIVITY_CLEAR_TOP
+        )
         val pendingIntent = PendingIntent.getActivity(
             this,
             0,
@@ -54,8 +75,8 @@ class ColaboraBoardFirebaseMessagingService: FirebaseMessagingService() {
             this,
             channelID
         ).setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("ColaboraBoard")
-            .setContentText("Message")
+            .setContentTitle(title)
+            .setContentText(message)
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
