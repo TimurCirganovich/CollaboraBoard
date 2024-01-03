@@ -29,4 +29,13 @@ object Constants {
     const val COLABORABOARD_PREFERENCES: String = "ColaboraBoardPrefs"
     const val FCM_TOKEN_UPDATED: String = "fcmTokenUpdated"
     const val FCM_TOKEN: String = "fcmToken"
+
+    const val FCM_BASE_URL: String = "https://fcm.googleapis.com/fcm/send"
+    const val FCM_AUTHORIZATION: String = "authorization"
+    const val FCM_KEY: String = "key"
+    const val FCM_SERVER_KEY: String = "AAAAY6HX3os:APA91bGTpetMxcUJkFlk3LQ3UeXLSGUV78gUblaj4wa-Q0i3nCDoT9ZZsBfs08kg_BPv0Sm2vp_VydSjJ7zDZDeqnJogSwcE2HlB_kjI3Jpmebufx2DaIZp7QMfbRHkPOnoZq1dQaftD"
+    const val FCM_KEY_TITLE: String = "title"
+    const val FCM_KEY_MESSAGE: String = "message"
+    const val FCM_KEY_DATA: String = "data"
+    const val FCM_KEY_TO: String = "to"
 }
