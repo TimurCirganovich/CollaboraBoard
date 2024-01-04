@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ColaboraBoard"
+rootProject.name = "CollaboraBoard"
 include(":app")

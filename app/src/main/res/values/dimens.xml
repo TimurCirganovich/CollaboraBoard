@@ -3,7 +3,7 @@
     
 
     <!--SplashActivity-->
-    <dimen name="splash_screen_title_text_size">60sp</dimen>
+    <dimen name="splash_screen_title_text_size">50sp</dimen>
     <!--IntroActivity-->
     <dimen name="intro_screen_title_text_size">40sp</dimen>
     <dimen name="intro_screen_title_text_marginTop">40dp</dimen>

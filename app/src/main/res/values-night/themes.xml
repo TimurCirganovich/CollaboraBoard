@@ -1,15 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.ColaboraBoard" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Base.Theme.CollaboraBoard" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark"></item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/accent</item>
     </style>
 
-    <style name="Theme.ColaboraBoard" parent="Base.Theme.ColaboraBoard" />
+    <style name="Theme.CollaboraBoard" parent="Base.Theme.CollaboraBoard" />
 
-    <style name="Theme.ColaboraBoard.NoActionBar">
+    <style name="Theme.CollaboraBoard.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>

@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.colaboraboard"
+    namespace = "com.example.collaboraboard"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.colaboraboard"
+        applicationId = "com.example.collaboraboard"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
