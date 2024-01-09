@@ -63,12 +63,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
                 if(mainBinding.drawerLayout.isDrawerOpen(GravityCompat.START)){
                     mainBinding.drawerLayout.closeDrawer(GravityCompat.START)
-                }else{
-                    doubleBackToExit()
                 }
             }
         })
     }
+
 
     fun populateBoardListToUI(boardsList: ArrayList<Board>){
         hideProgressDialog()
@@ -97,6 +96,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
     }
 
+    //Function to setup action bar
     private fun setUpActionBar(){
         setSupportActionBar(mainBinding.appBarMain.toolbarMainActivity)
         mainBinding.appBarMain.toolbarMainActivity.setNavigationIcon(R.drawable.ic_action_navigation_menu)

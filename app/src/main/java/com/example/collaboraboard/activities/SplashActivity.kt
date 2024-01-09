@@ -9,24 +9,20 @@ import com.example.collaboraboard.databinding.ActivitySplashBinding
 import com.example.collaboraboard.firebase.FirestoreClass
 
 class SplashActivity : BaseActivity() {
-    private lateinit var binding: ActivitySplashBinding
+    private lateinit var binding: ActivitySplashBinding     //A global variable for UI element access
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //binding init for UI elements access
         binding = ActivitySplashBinding.inflate(layoutInflater)
-        //setContentView(R.layout.activity_splash)
         setContentView(binding.root)
 
         makeFullScreen()
 
-        //Applying custom font to title on the splashscreen
+        //Applying custom font from assets to TextView on the splashscreen
         val typeface: Typeface = Typeface.createFromAsset(assets, "carbon_bl.otf")
-
-        //val title = findViewById<TextView>(R.id.tvAppName)
-
-        //title.typeface = typeface
         binding.tvAppName.typeface = typeface
 
-        //Move from SplashScreen to Intro screen
+        //Move from SplashScreen to Intro screen or Main screen (if user was signed in before) after 2.5 seconds delay
         Handler(Looper.getMainLooper()).postDelayed({
             val currentUserID = FirestoreClass().getCurrentUserId()
             if(currentUserID.isNotEmpty()){
@@ -35,7 +31,7 @@ class SplashActivity : BaseActivity() {
                 startActivity(Intent(this, IntroActivity::class.java))
             }
 
-            finish()
+            finish()    //finish SplashScreen
         }, 2500)
     }
 }

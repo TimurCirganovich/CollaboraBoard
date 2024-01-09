@@ -20,15 +20,17 @@ import com.google.firebase.firestore.SetOptions
 
 class FirestoreClass {
 
-    private val mFireStore = FirebaseFirestore.getInstance()
+    private val mFireStore = FirebaseFirestore.getInstance() //A global variable of database access
 
+    //Function to save user data in Firebase
     fun registerUser(activity: SignUpActivity, userInfo: User){
-        mFireStore.collection(Constants.USERS)
-            .document(getCurrentUserId()).set(userInfo, SetOptions.merge())
+        mFireStore.collection(Constants.USERS)      //users collection
+            .document(getCurrentUserId())       //current users document
+            .set(userInfo, SetOptions.merge())  //write data to Firestore Firebase with merge parameter
             .addOnSuccessListener {
                 activity.userRegisteredSuccess()
-            }.addOnFailureListener {
-                e->
+            }.addOnFailureListener { e->
+                activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error writing document", e)
             }
     }
