@@ -187,22 +187,30 @@ class CardDetailsActivity : BaseActivity() {
 
     //Function to update card details.
     private fun updateCardDetails(){
-        val card = Card(
-            cardDetailsBinding.etNameCardDetails.text.toString(),
-            mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].createdBy,
-            mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].assignedTo,
-            mSelectedColor,
-            mSelectedDueDateMilliseconds
-        )
+        if (cardDetailsBinding.etNameCardDetails.text.toString().length > 50){
+            Toast.makeText(
+                this,
+                "Name is too long",
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            val card = Card(
+                cardDetailsBinding.etNameCardDetails.text.toString(),
+                mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].createdBy,
+                mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].assignedTo,
+                mSelectedColor,
+                mSelectedDueDateMilliseconds
+            )
 
-        //assign the update card details to the task list using the card position
-        mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition] = card
-        //otherwise will be created another empty task list (users don't want it to happen)
-        mBoardDetails.taskList.removeAt(mBoardDetails.taskList.size-1)
+            //assign the update card details to the task list using the card position
+            mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition] = card
+            //otherwise will be created another empty task list (users don't want it to happen)
+            mBoardDetails.taskList.removeAt(mBoardDetails.taskList.size - 1)
 
 
-        showProgressDialog(resources.getString(R.string.please_wait))
-        FirestoreClass().addUpdateTaskList(this@CardDetailsActivity, mBoardDetails)
+            showProgressDialog(resources.getString(R.string.please_wait))
+            FirestoreClass().addUpdateTaskList(this@CardDetailsActivity, mBoardDetails)
+        }
     }
 
     //Function to delete the card from the task list.
